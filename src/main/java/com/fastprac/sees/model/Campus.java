@@ -209,7 +209,7 @@ public class Campus {
 	}
 
 	/**
-	 * 
+	 * Draw fence
 	 */
 	private void drawCampusWall() {
 		int centerI = numInX / 2;
