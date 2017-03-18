@@ -29,8 +29,8 @@ public class Campus {
 	private Location startLoc;
 	private int cellSize;
 
-	public static final int numInX = 60;
-	public static final int numInY = 40;
+	public static final int numInX = 61;
+	public static final int numInY = 41;
 	public static final Cell[][] cells = new Cell[numInX][numInY];
 	public static List<Cell> doors;
 	public static List<Tree> trees;
@@ -216,8 +216,8 @@ public class Campus {
 		int centerJ = numInY / 2;
 		int centerX = startLoc.getX() + cellSize * centerI;
 		int centerY = startLoc.getY() + cellSize * centerJ;
-		int halfWidth = cellSize * numInX / 2;
-		int halfHeight = cellSize * numInY / 2;
+		int halfWidth = cellSize * (numInX + 1) / 2;
+		int halfHeight = cellSize * (numInY + 1) / 2;
 		System.out.println(
 				"x0=" + startLoc.getX() + ", y0=" + startLoc.getY() + ", w2=" + halfWidth + ", h2=" + halfHeight);
 
@@ -298,7 +298,7 @@ public class Campus {
 		int northWestDoorI = classroomStartI + classroomNumX / 8;
 		int northWestDoorJ = classroomStartJ + classroomNumY - 1;
 		drawDoor(northWestDoorI, northWestDoorJ);
-		drawDoor(northWestDoorI - 1, northWestDoorJ);
+		drawDoor(northWestDoorI + 1, northWestDoorJ);
 
 		// North-east door
 		int northEastDoorI = classroomStartI + classroomNumX * 7 / 8;
@@ -310,42 +310,85 @@ public class Campus {
 		int southWestDoorI = classroomStartI + classroomNumX / 8;
 		int southWestDoorJ = classroomStartJ;
 		drawDoor(southWestDoorI, southWestDoorJ);
-		drawDoor(southWestDoorI - 1, southWestDoorJ);
+		drawDoor(southWestDoorI + 1, southWestDoorJ);
 
 		// South-east door
 		int southEastDoorI = classroomStartI + classroomNumX * 7 / 8;
 		int southEastDoorJ = classroomStartJ;
 		drawDoor(southEastDoorI, southEastDoorJ);
 		drawDoor(southEastDoorI - 1, southEastDoorJ);
-		}
+	}
 
 	private void drawTrees() {
+		// Draw inner trees
 		int id = 1;
 		int treeI = classroomStartI + classroomNumX / 3;
 		int treeJ = classroomStartJ + classroomNumY / 3;
-		drawTree(id++, treeI, treeJ);
-		drawTree(id++, treeI, treeJ - 1);
+		id = drawInnerTree(id, treeI, treeJ);
 
 		treeI = classroomStartI + classroomNumX * 2 / 3;
 		treeJ = classroomStartJ + classroomNumY / 3;
-		drawTree(id++, treeI, treeJ);
-		drawTree(id++, treeI, treeJ - 1);
+		id = drawInnerTree(id, treeI, treeJ);
 
 		treeI = classroomStartI + classroomNumX * 2 / 3;
 		treeJ = classroomStartJ + classroomNumY * 2 / 3;
-		drawTree(id++, treeI, treeJ);
-		drawTree(id++, treeI, treeJ + 1);
+		id = drawInnerTree(id, treeI, treeJ);
 
 		treeI = classroomStartI + classroomNumX / 3;
 		treeJ = classroomStartJ + classroomNumY * 2 / 3;
-		drawTree(id++, treeI, treeJ);
-		drawTree(id++, treeI, treeJ + 1);
+		id = drawInnerTree(id, treeI, treeJ);
 
 		treeI = classroomStartI + classroomNumX / 2;
 		treeJ = classroomStartJ + classroomNumY / 2;
+		id = drawInnerTree(id, treeI, treeJ);
+
+		// Draw outer trees
+		treeI = classroomStartI / 2;
+		treeJ = classroomStartJ + classroomNumY * 3 / 4;
+		id = drawOuterTree(id, treeI, treeJ);
+
+		treeI = classroomStartI / 2;
+		treeJ = classroomStartJ + classroomNumY / 4;
+		id = drawOuterTree(id, treeI, treeJ);
+
+		treeI = classroomEndI + (numInX - classroomEndI) / 2;
+		treeJ = classroomStartJ + classroomNumY * 3 / 4;
+		id = drawOuterTree(id, treeI, treeJ);
+
+		treeI = classroomEndI + (numInX - classroomEndI) / 2;
+		treeJ = classroomStartJ + classroomNumY / 4;
+		id = drawOuterTree(id, treeI, treeJ);
+		
+		treeI = classroomStartI + classroomNumX / 4;
+		treeJ = classroomEndJ + (numInY - classroomEndJ) / 2;
+		id = drawOuterTree(id, treeI, treeJ);
+		
+		treeI = classroomStartI + classroomNumX *3/ 4;
+		treeJ = classroomEndJ + (numInY - classroomEndJ) / 2;
+		id = drawOuterTree(id, treeI, treeJ);
+		
+		treeI = classroomStartI + classroomNumX / 4;
+		treeJ = classroomStartJ / 2;
+		id = drawOuterTree(id, treeI, treeJ);
+		
+		treeI = classroomStartI + classroomNumX *3/ 4;
+		treeJ = classroomStartJ / 2;
+		id = drawOuterTree(id, treeI, treeJ);
+	}
+
+	private int drawInnerTree(int id, int treeI, int treeJ) {
 		drawTree(id++, treeI, treeJ);
 		drawTree(id++, treeI, treeJ - 1);
 		drawTree(id++, treeI, treeJ + 1);
+		return id;
+	}
+
+	private int drawOuterTree(int id, int treeI, int treeJ) {
+		drawTree(id++, treeI, treeJ);
+		drawTree(id++, treeI, treeJ + 1);
+		drawTree(id++, treeI + 1, treeJ + 1);
+		drawTree(id++, treeI + 1, treeJ);
+		return id;
 	}
 
 	/**
@@ -365,7 +408,7 @@ public class Campus {
 	private void drawTree(int id, int treeI, int treeJ) {
 		Cell cell = cells[treeI][treeJ];
 		if (cell != null) {
-			Tree tree = new Tree(id, "", cellSize, cell, Color.GREEN);
+			Tree tree = new Tree(id, "", cell, Color.GREEN);
 			trees.add(tree);
 			tree.draw();
 		}
