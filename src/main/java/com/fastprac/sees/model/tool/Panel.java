@@ -113,7 +113,16 @@ public class Panel {
 		toolItems.put("Start", btn);
 	}
 	
-	ToolItem getStartBtn() {
+	public ToolItem getStartBtn() {
 		return toolItems.get("Start");
+	}
+	
+	public void addStopBtn(int x, int y, int width, int height) {
+		ToolItem btn = new Button("Stop", "Stop", new Location(x, y), new Dimension(width, height));
+		toolItems.put("Stop", btn);
+	}
+	
+	public ToolItem getStopBtn() {
+		return toolItems.get("Stop");
 	}
 }
