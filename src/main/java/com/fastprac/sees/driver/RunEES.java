@@ -41,8 +41,8 @@ import com.fastprac.utils.lib.StdDraw;
  *
  */
 public class RunEES {
-	private static final int canvasWidth = 768;
-	private static final int canvasHeight = 512;
+	private static final int canvasWidth = 800;
+	private static final int canvasHeight = 550;
 	private static final int poolSize = 100;
 	private static final int duration = 120;
 	private static final int numOfPeople = 100;
@@ -72,19 +72,27 @@ public class RunEES {
 		setCanvasScale();
 
 		// Create control panel
-		Panel toolPanel = new Panel(new Location(0, 460), new Dimension(canvasWidth, 52));
-		ToolItem item = new Button("Start button", "Start", new Location(700, 470), new Dimension(60, 32));
+		Panel toolPanel = new Panel(new Location(0, (canvasHeight - 70)), new Dimension(canvasWidth, 50));
+		ToolItem item = new Button("Start button", "Start", new Location(700, canvasHeight - 65), new Dimension(60, 32));
 		toolPanel.addToolItem(item);
 		toolPanel.draw();
 
 		// Create a clock
-		Timer timer = new Timer(new Location(700, 430), new Dimension(60, 32));
+		Timer timer = new Timer(new Location(700, canvasHeight - 100), new Dimension(60, 32));
 		Timing timing = new Timing(timer, 100L);
 		timer.draw();
 
 		// Create campus
 		Campus campus = new Campus(50, 50, 10);
 		campus.draw();
+
+		// Create attack
+		int attackStartI = (int) (Campus.getClassroomStartI() + Math.random() * Campus.getClassroomNumX());
+		int attackStartJ = (int) (Campus.getClassroomStartJ() + Campus.getClassroomNumY()/2);
+		Attacker attacker = new Attacker(1, "Attacker", 10, Campus.cells[attackStartI][attackStartJ]);
+		Campus.attacker = attacker;
+		attacker.draw();
+		System.out.println("An attacker created at (" + attackStartI + ", " + attackStartJ + ")");
 
 		// Create students/faculty
 		Map<Person, Escape> personEscapes = new HashMap<Person, Escape>();
@@ -101,13 +109,8 @@ public class RunEES {
 		}
 		System.out.println("Total people created: " + personEscapes.size());
 
-		// Create attack
-		int attackStartI = Campus.getClassroomStartI();
-		int attackStartJ = Campus.getClassroomStartJ() + Campus.getClassroomNumY() / 2;
-		Attacker attacker = new Attacker(1, "Attacker", 10, Campus.cells[attackStartI][attackStartJ]);
-		Campus.attacker = attacker;
+		// Define attacking action
 		Attacking attacking = new Attacking(attacker, 1, duration);
-		attacker.draw();
 
 		// Start simulation.
 		try {

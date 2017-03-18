@@ -29,8 +29,8 @@ public class Campus {
 	private Location startLoc;
 	private int cellSize;
 
-	public static final int numInX = 51;
-	public static final int numInY = 31;
+	public static final int numInX = 60;
+	public static final int numInY = 40;
 	public static final Cell[][] cells = new Cell[numInX][numInY];
 	public static List<Cell> doors;
 	public static List<Tree> trees;
@@ -43,6 +43,12 @@ public class Campus {
 	private static int classroomEndJ;
 	private static int classroomNumX;
 	private static int classroomNumY;
+
+	//
+	private static int i1;
+	private static int i2;
+	private static int j1;
+	private static int j2;
 
 	/**
 	 * Construct a Campus object using default settings.
@@ -117,6 +123,17 @@ public class Campus {
 				cells[i][j] = cell;
 			}
 		}
+
+		// Set classroom area
+		classroomStartI = numInX / 4;
+		classroomStartJ = numInY / 4;
+		classroomNumX = numInX - classroomStartI * 2;
+		classroomNumY = numInY - classroomStartJ * 2;
+
+		i1 = classroomNumX / 4;
+		i2 = classroomNumX * 3 / 4;
+		j1 = classroomNumY / 5;
+		j2 = classroomNumY * 4 / 5;
 
 		// Initialize doors
 		doors = new ArrayList<Cell>();
@@ -210,19 +227,19 @@ public class Campus {
 
 	private void drawClassroom() {
 		try {
-			// Set classroom area
-			classroomStartI = numInX / 4;
-			classroomStartJ = numInY / 4;
-			classroomNumX = numInX - classroomStartI * 2;
-			classroomNumY = numInY - classroomStartJ * 2;
-
 			// Set thread pool.
 			ExecutorService executor = Executors.newFixedThreadPool(classroomNumX * classroomNumY);
 
 			// Create and execute runnable thread tasks
+
 			for (int i = 0; i < classroomNumX; i++) {
 				classroomEndI = classroomStartI + i;
 				for (int j = 0; j < classroomNumY; j++) {
+
+					if ((i > i1 && i < i2) && (j < j1 || j > j2)) {
+						continue;
+					}
+
 					classroomEndJ = classroomStartJ + j;
 					Cell cell = cells[classroomEndI][classroomEndJ];
 					if (cell != null) {
@@ -249,58 +266,86 @@ public class Campus {
 	 * 
 	 */
 	private void drawClassroomDoors() {
+		// East door
 		int eastDoorI = classroomEndI;
 		int eastDoorJ = classroomStartJ + classroomNumY / 2;
 		drawDoor(eastDoorI, eastDoorJ);
 		drawDoor(eastDoorI, eastDoorJ - 1);
 		drawDoor(eastDoorI, eastDoorJ + 1);
 
-		 int southDoorI = classroomStartI + classroomNumX / 2;
-		 int southDoorJ = classroomStartJ;
-		 drawDoor(southDoorI, southDoorJ);
-		 drawDoor(southDoorI - 1, southDoorJ);
-		 drawDoor(southDoorI + 1, southDoorJ);
-		
-//		 int westDoorI = classroomStartI;
-//		 int westDoorJ = classroomStartJ + classroomNumY / 2;
-//		 drawDoor(westDoorI, westDoorJ);
-//		 drawDoor(westDoorI, westDoorJ - 1);
-//		 drawDoor(westDoorI, westDoorJ + 1);
-		
-		 int northDoorI = classroomStartI + classroomNumX / 2;
-		 int northDoorJ = classroomEndJ;
-		 drawDoor(northDoorI, northDoorJ);
-		 drawDoor(northDoorI - 1, northDoorJ);
-		 drawDoor(northDoorI + 1, northDoorJ);
-	}
+		// South door
+		int southDoorI = classroomStartI + classroomNumX / 2;
+		int southDoorJ = classroomStartJ + j1;
+		drawDoor(southDoorI, southDoorJ);
+		drawDoor(southDoorI - 1, southDoorJ);
+		drawDoor(southDoorI + 1, southDoorJ);
+
+		// West door
+		int westDoorI = classroomStartI;
+		int westDoorJ = classroomStartJ + classroomNumY / 2;
+		drawDoor(westDoorI, westDoorJ);
+		drawDoor(westDoorI, westDoorJ - 1);
+		drawDoor(westDoorI, westDoorJ + 1);
+
+		// North door
+		int northDoorI = classroomStartI + classroomNumX / 2;
+		int northDoorJ = classroomStartJ + j2;
+		drawDoor(northDoorI, northDoorJ);
+		drawDoor(northDoorI - 1, northDoorJ);
+		drawDoor(northDoorI + 1, northDoorJ);
+
+		// North-west door
+		int northWestDoorI = classroomStartI + classroomNumX / 8;
+		int northWestDoorJ = classroomStartJ + classroomNumY - 1;
+		drawDoor(northWestDoorI, northWestDoorJ);
+		drawDoor(northWestDoorI - 1, northWestDoorJ);
+
+		// North-east door
+		int northEastDoorI = classroomStartI + classroomNumX * 7 / 8;
+		int northEastDoorJ = classroomStartJ + classroomNumY - 1;
+		drawDoor(northEastDoorI, northEastDoorJ);
+		drawDoor(northEastDoorI - 1, northEastDoorJ);
+
+		// South-west door
+		int southWestDoorI = classroomStartI + classroomNumX / 8;
+		int southWestDoorJ = classroomStartJ;
+		drawDoor(southWestDoorI, southWestDoorJ);
+		drawDoor(southWestDoorI - 1, southWestDoorJ);
+
+		// South-east door
+		int southEastDoorI = classroomStartI + classroomNumX * 7 / 8;
+		int southEastDoorJ = classroomStartJ;
+		drawDoor(southEastDoorI, southEastDoorJ);
+		drawDoor(southEastDoorI - 1, southEastDoorJ);
+		}
 
 	private void drawTrees() {
 		int id = 1;
 		int treeI = classroomStartI + classroomNumX / 3;
 		int treeJ = classroomStartJ + classroomNumY / 3;
 		drawTree(id++, treeI, treeJ);
-		drawTree(id++, treeI, treeJ-1);
-		
+		drawTree(id++, treeI, treeJ - 1);
+
 		treeI = classroomStartI + classroomNumX * 2 / 3;
 		treeJ = classroomStartJ + classroomNumY / 3;
 		drawTree(id++, treeI, treeJ);
-		drawTree(id++, treeI, treeJ-1);
-		
+		drawTree(id++, treeI, treeJ - 1);
+
 		treeI = classroomStartI + classroomNumX * 2 / 3;
 		treeJ = classroomStartJ + classroomNumY * 2 / 3;
 		drawTree(id++, treeI, treeJ);
-		drawTree(id++, treeI, treeJ+1);
-		
+		drawTree(id++, treeI, treeJ + 1);
+
 		treeI = classroomStartI + classroomNumX / 3;
 		treeJ = classroomStartJ + classroomNumY * 2 / 3;
 		drawTree(id++, treeI, treeJ);
-		drawTree(id++, treeI, treeJ+1);
+		drawTree(id++, treeI, treeJ + 1);
 
 		treeI = classroomStartI + classroomNumX / 2;
 		treeJ = classroomStartJ + classroomNumY / 2;
 		drawTree(id++, treeI, treeJ);
-		drawTree(id++, treeI, treeJ-1);
-		drawTree(id++, treeI, treeJ+1);
+		drawTree(id++, treeI, treeJ - 1);
+		drawTree(id++, treeI, treeJ + 1);
 	}
 
 	/**
