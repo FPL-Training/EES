@@ -18,7 +18,6 @@ import com.fastprac.utils.lib.StdDraw;
 public class Tree {
 	private int id;
 	private String name;
-	private int size;
 	private Cell cell;
 	private Color color;
 
@@ -26,7 +25,6 @@ public class Tree {
 		super();
 		this.id = 0;
 		this.name = "";
-		this.size = 0;
 		this.cell = null;
 		this.color = Color.GREEN;
 	}
@@ -38,11 +36,10 @@ public class Tree {
 	 * @param cell
 	 * @param color
 	 */
-	public Tree(int id, String name, int size, Cell cell, Color color) {
+	public Tree(int id, String name, Cell cell, Color color) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.size = size;
 		this.cell = cell;
 		this.color = color;
 	}
@@ -62,13 +59,6 @@ public class Tree {
 	}
 
 	/**
-	 * @return the size
-	 */
-	public int getSize() {
-		return size;
-	}
-
-	/**
 	 * @return the cell
 	 */
 	public Cell getCell() {
@@ -84,11 +74,14 @@ public class Tree {
 
 	public void draw() {
 		if (this.cell != null) {
+			int radius = this.cell.getDimension().getWidth() / 2;
+
 			StdDraw.setPenColor(color);
-			StdDraw.filledCircle(this.cell.getLoc().getX(), this.cell.getLoc().getY(), size / 2);
+			StdDraw.filledCircle(this.cell.getLoc().getX(), this.cell.getLoc().getY(), radius);
 
 			StdDraw.setPenColor(Color.WHITE);
-			StdDraw.circle(this.cell.getLoc().getX(), this.cell.getLoc().getY(), size / 2);
+
+			StdDraw.circle(this.cell.getLoc().getX(), this.cell.getLoc().getY(), radius);
 
 			// Take the cell
 			this.cell.setOccupant(this);
