@@ -23,17 +23,15 @@ import java.util.concurrent.TimeUnit;
 
 import com.fastprac.sees.model.Attacker;
 import com.fastprac.sees.model.Campus;
-import com.fastprac.sees.model.Timer;
 import com.fastprac.sees.model.Dimension;
 import com.fastprac.sees.model.Location;
 import com.fastprac.sees.model.Person;
+import com.fastprac.sees.model.Timer;
 import com.fastprac.sees.model.status.MomentStatus;
-import com.fastprac.sees.model.tool.Button;
 import com.fastprac.sees.model.tool.Panel;
-import com.fastprac.sees.model.tool.ToolItem;
-import com.fastprac.sees.task.Timing;
 import com.fastprac.sees.task.Attacking;
 import com.fastprac.sees.task.Escape;
+import com.fastprac.sees.task.Timing;
 import com.fastprac.utils.lib.StdDraw;
 
 /**
@@ -73,8 +71,7 @@ public class RunEES {
 
 		// Create control panel
 		Panel toolPanel = new Panel(new Location(0, (canvasHeight - 70)), new Dimension(canvasWidth, 50));
-		ToolItem item = new Button("Start button", "Start", new Location(700, canvasHeight - 65), new Dimension(60, 32));
-		toolPanel.addToolItem(item);
+		toolPanel.addStartBtn(700, (canvasHeight - 65), 50, 30);
 		toolPanel.draw();
 
 		// Create a clock
@@ -112,6 +109,10 @@ public class RunEES {
 		// Define attacking action
 		Attacking attacking = new Attacking(attacker, 1, duration);
 
+		startSimulation(timer, personEscapes, attacking);
+	}
+	
+	private static void startSimulation(Timer timer, Map<Person, Escape> personEscapes, Attacking attacking) {
 		// Start simulation.
 		try {
 			Thread.sleep(3000);

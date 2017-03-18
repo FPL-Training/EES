@@ -76,5 +76,10 @@ public class Button extends ToolItem {
 		StdDraw.text(x, y, text);
 	}
 
-
+	public Boolean pointOn(int x, int y) {
+		int btnX = loc.getX();
+		int btnY = loc.getY();
+		return (x > btnX && x < (btnX + dimension.getWidth()) &&
+			y > btnY && y < (btnY + dimension.getHeight()));
+	}
 }

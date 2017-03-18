@@ -107,5 +107,13 @@ public class Panel {
 			item.draw();
 		}
 	}
+
+	public void addStartBtn(int x, int y, int width, int height) {
+		ToolItem btn = new Button("Start", "Start", new Location(x, y), new Dimension(width, height));
+		toolItems.put("Start", btn);
+	}
 	
+	ToolItem getStartBtn() {
+		return toolItems.get("Start");
+	}
 }
