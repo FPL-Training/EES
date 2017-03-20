@@ -11,9 +11,6 @@
  */
 package com.fastprac.sees.model.tool;
 
-import java.awt.Color;
-import java.awt.Font;
-
 import com.fastprac.sees.model.Dimension;
 import com.fastprac.sees.model.Location;
 import com.fastprac.utils.lib.StdDraw;
@@ -81,5 +78,17 @@ public class Button extends ToolItem {
 		int btnY = loc.getY();
 		return (x > btnX && x < (btnX + dimension.getWidth()) &&
 			y > btnY && y < (btnY + dimension.getHeight()));
+	}
+
+	@Override
+	public void enable() {
+		status = ButtonStatus.ON;
+		draw();		
+	}
+
+	@Override
+	public void disable() {
+		status = ButtonStatus.OFF;
+		draw();			
 	}
 }

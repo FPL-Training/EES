@@ -17,7 +17,7 @@ import java.awt.Color;
  * @author Admin
  *
  */
-enum ButtonStatus implements ToolItemStatus {
+public enum ButtonStatus implements ToolItemStatus {
 	ON(Color.GREEN, Color.GREEN),
 	OFF(Color.LIGHT_GRAY, Color.LIGHT_GRAY);
 	

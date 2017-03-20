@@ -12,6 +12,7 @@
 package com.fastprac.sees.model.tool;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.fastprac.sees.model.Location;
@@ -27,6 +28,7 @@ public abstract class ToolItem {
 	protected String name;
 	protected String text;
 	protected Color color;
+	protected Font font;
 	protected Location loc;
 	
 	/**
@@ -104,4 +106,6 @@ public abstract class ToolItem {
 	}
 	
 	abstract public void draw();
+	abstract public void enable();
+	abstract public void disable();
 }

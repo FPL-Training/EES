@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.fastprac.sees.configuration.Canvas;
 import com.fastprac.sees.model.Attacker;
 import com.fastprac.sees.model.Campus;
 import com.fastprac.sees.model.Dimension;
@@ -28,7 +29,10 @@ import com.fastprac.sees.model.Location;
 import com.fastprac.sees.model.Person;
 import com.fastprac.sees.model.Timer;
 import com.fastprac.sees.model.status.MomentStatus;
+import com.fastprac.sees.model.tool.Button;
+import com.fastprac.sees.model.tool.ButtonStatus;
 import com.fastprac.sees.model.tool.Panel;
+import com.fastprac.sees.model.tool.ToolItem;
 import com.fastprac.sees.task.Attacking;
 import com.fastprac.sees.task.Escape;
 import com.fastprac.sees.task.Timing;
@@ -39,58 +43,67 @@ import com.fastprac.utils.lib.StdDraw;
  *
  */
 public class RunEES {
+	private static final Canvas cavas;
 	private static final int canvasWidth = 800;
 	private static final int canvasHeight = 550;
 	private static final int poolSize = 100;
-	private static final int duration = 120;
+	private static final int duration = 60;
 	private static final int numOfPeople = 100;
 
-	/**
-	 * 
-	 */
+	static {
+		System.out.println("Creating canvas...");
+		cavas = new Canvas(canvasWidth, canvasHeight);
+	}
+	
 	public RunEES() {
-
+	
 	}
 
-	/**
-	 * 
-	 */
-	public static void setCanvasScale() {
-		// Change from the default of 512x512.
-		StdDraw.setCanvasSize(canvasWidth, canvasHeight);
-
-		// Change scale from the default of [0 - 1.0].
-		StdDraw.setXscale(0, canvasWidth);
-		StdDraw.setYscale(0, canvasHeight);
-	}
-
-	public static void main(String[] args) {
-
-		// Setup canvas
-		setCanvasScale();
-
-		// Create control panel
+	private static Panel createToolPanel() {
+		System.out.println("Creating tool panel...");
 		Panel toolPanel = new Panel(new Location(0, (canvasHeight - 70)), new Dimension(canvasWidth, 50));
-		toolPanel.addStartBtn(700, (canvasHeight - 65), 50, 30);
+		
+		// Add start button
+		toolPanel.addButton(600, (canvasHeight - 60), 49, 28, "Start");
+		
+		// Add pause button
+		toolPanel.addButton(650, (canvasHeight - 60), 49, 28, "Pause");
+				
+		// Add stop button
+		toolPanel.addButton(700, (canvasHeight - 60), 49, 28, "Stop");
+		
 		toolPanel.draw();
-
-		// Create a clock
+		return toolPanel;
+	}
+	
+	private static Timer createResultPanel() {
+		System.out.println("Creating result panel...");
 		Timer timer = new Timer(new Location(700, canvasHeight - 100), new Dimension(60, 32));
 		Timing timing = new Timing(timer, 100L);
 		timer.draw();
+		
+		return timer;
+	}
 
-		// Create campus
+	private static Campus createCampus() {
+		System.out.println("Creating school campus...");
 		Campus campus = new Campus(50, 50, 10);
 		campus.draw();
-
-		// Create attack
+		return campus;
+	}
+	
+	private static Attacker addAttacker() {
+		System.out.println("Adding an attacker in campus...");
 		int attackStartI = (int) (Campus.getClassroomStartI() + Math.random() * Campus.getClassroomNumX());
 		int attackStartJ = (int) (Campus.getClassroomStartJ() + Campus.getClassroomNumY()/2);
 		Attacker attacker = new Attacker(1, "Attacker", 10, Campus.cells[attackStartI][attackStartJ]);
 		Campus.attacker = attacker;
 		attacker.draw();
 		System.out.println("An attacker created at (" + attackStartI + ", " + attackStartJ + ")");
-
+		return attacker;
+	}
+	
+	private static Map<Person, Escape> addPeople() {
 		// Create students/faculty
 		Map<Person, Escape> personEscapes = new HashMap<Person, Escape>();
 		for (int n = 0; n < numOfPeople; n++) {
@@ -105,18 +118,31 @@ public class RunEES {
 			}
 		}
 		System.out.println("Total people created: " + personEscapes.size());
-
+		
+		return personEscapes;
+	}
+	
+	private static void runAttackingSimulation(Panel toolPanel, Timer timer, Attacker attacker, Map<Person, Escape> personEscapes) {
 		// Define attacking action
 		Attacking attacking = new Attacking(attacker, 1, duration);
 
-		startSimulation(timer, personEscapes, attacking);
+		// Run simulation
+		Button startBtn = (Button) toolPanel.getButton("Start");
+		while(startBtn.getStatus() == ButtonStatus.ON) {
+			if (StdDraw.mousePressed()) {
+			int x = (int) StdDraw.mouseX();
+			int y = (int) StdDraw.mouseY();
+			if (startBtn.pointOn(x, y)) {
+				startBtn.disable();				
+				startSimulation(timer, personEscapes, attacking);
+				startBtn.enable();
+			}}
+		}		
 	}
 	
 	private static void startSimulation(Timer timer, Map<Person, Escape> personEscapes, Attacking attacking) {
 		// Start simulation.
 		try {
-			Thread.sleep(3000);
-
 			// Keep all threads in list
 			// ExecutorService executor = Executors.newSingleThreadExecutor();
 			ExecutorService executor = Executors.newFixedThreadPool(poolSize);
@@ -143,8 +169,6 @@ public class RunEES {
 			while (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
 				// System.out.println("Still running...");
 			}
-			;
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
@@ -153,6 +177,25 @@ public class RunEES {
 			System.out.println("    FINISH!     ");
 			System.out.println("****************");
 		}
-
 	}
+	
+	/**
+	 * Run EES
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		Panel toolPanel = createToolPanel();
+
+		Timer timer = createResultPanel();
+
+		Campus campus = createCampus();
+
+		Attacker attacker = addAttacker();
+
+		Map<Person, Escape> personEscapes = addPeople();
+
+		runAttackingSimulation(toolPanel, timer, attacker, personEscapes);
+	}
+
 }

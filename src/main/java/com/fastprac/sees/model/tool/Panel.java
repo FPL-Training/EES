@@ -31,6 +31,7 @@ public class Panel {
 	private final Color borderColor;
 	
 	private final Map<String, ToolItem> toolItems;
+	
 	/**
 	 * 
 	 */
@@ -108,30 +109,12 @@ public class Panel {
 		}
 	}
 
-	public void addButton(int x, int y, int width, int height) {
-		ToolItem btn = new Button("Start", "Start", new Location(x, y), new Dimension(width, height));
-		toolItems.put("Start", btn);
+	public void addButton(int x, int y, int width, int height, String btnName) {
+		ToolItem btn = new Button(btnName, btnName, new Location(x, y), new Dimension(width, height));
+		toolItems.put(btnName, btn);
 	}
 	
 	public ToolItem getButton(String btnName) {
 		return toolItems.get(btnName);
-	}
-
-	public void addStartBtn(int x, int y, int width, int height) {
-		ToolItem btn = new Button("Start", "Start", new Location(x, y), new Dimension(width, height));
-		toolItems.put("Start", btn);
-	}
-	
-	public ToolItem getStartBtn() {
-		return toolItems.get("Start");
-	}
-	
-	public void addStopBtn(int x, int y, int width, int height) {
-		ToolItem btn = new Button("Stop", "Stop", new Location(x, y), new Dimension(width, height));
-		toolItems.put("Stop", btn);
-	}
-	
-	public ToolItem getStopBtn() {
-		return toolItems.get("Stop");
 	}
 }
