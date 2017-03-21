@@ -1,7 +1,6 @@
 package com.fastprac.sees.model.tool;
 
 import com.fastprac.sees.model.tool.Button;
-import com.fastprac.sees.model.tool.ButtonStatus;
 
 public class Toolbar {
 
@@ -52,5 +51,15 @@ public class Toolbar {
 		startBtn.disable();
 		stopBtn.disable();
 		resetBtn.disable();
-	}	
+	}
+
+	public void toggle(int x, int y) {
+		if (startBtn.pointOn(x, y) && startBtn.isReleased()) {
+			pressStart();
+		} else if (stopBtn.pointOn(x, y) && stopBtn.isReleased()) {
+			pressStop();
+		} else if (resetBtn.pointOn(x, y) && resetBtn.isReleased()) {
+			pressStop();
+		}
+	}
 }

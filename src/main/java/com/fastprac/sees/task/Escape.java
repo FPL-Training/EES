@@ -19,6 +19,7 @@ import com.fastprac.sees.driver.RunEES;
 import com.fastprac.sees.model.Person;
 import com.fastprac.sees.model.status.MomentStatus;
 import com.fastprac.sees.model.tool.Button;
+import com.fastprac.sees.model.tool.ButtonType;
 import com.fastprac.sees.model.tool.Toolbar;
 import com.fastprac.utils.lib.StdDraw;
 
@@ -62,22 +63,14 @@ public class Escape implements Callable<List<MomentStatus>> {
 		Long seq = 0L;
 
 		Toolbar toolbar = RunEES.getToolbar();
-		Button startBtn = toolbar.getStartBtn();
-		Button stopBtn = toolbar.getStopBtn();
-		Button resetBtn = toolbar.getResetBtn();
-
 		while (person.isMovable() && (duration > 0)) {
 			if (StdDraw.mousePressed()) {
 				int x = (int) StdDraw.mouseX();
 				int y = (int) StdDraw.mouseY();
-				if (stopBtn.pointOn(x, y) && stopBtn.isReleased()) {
-					toolbar.pressStop();
-				} else if (startBtn.pointOn(x, y) && startBtn.isReleased()) {
-					toolbar.pressStart();
-				}
+				toolbar.toggle(x, y);
 			}
-			
-			if (startBtn.isPressed()) {
+
+			if (toolbar.getStartBtn().isPressed()) {
 				seq++;
 				MomentStatus mStatus = person.move();
 				mStatusList.add(mStatus);

@@ -111,7 +111,7 @@ public class Panel {
 
 	public void addButton(int x, int y, int width, int height, ButtonType btnType) {
 		String btnName = btnType.getLabel();
-		ToolItem btn = new Button(btnName, btnName, new Location(x, y), new Dimension(width, height));
+		ToolItem btn = new Button(btnType, new Location(x, y), new Dimension(width, height));
 		toolItems.put(btnName, btn);
 	}
 	
