@@ -148,9 +148,12 @@ public class RunEES {
 			int x = (int) StdDraw.mouseX();
 			int y = (int) StdDraw.mouseY();
 			if (startBtn.pointOn(x, y)) {
-				toolbar.pressStart();				
+				toolbar.pressStart();
+				
 				startSimulation(timer, personEscapes, attacking);
-				toolbar.pressStop();
+				
+				toolbar.disable();
+				toolbar.getResetBtn().enable();
 			}}
 		}
 	}
