@@ -15,8 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import com.fastprac.sees.driver.RunEES;
 import com.fastprac.sees.model.Attacker;
 import com.fastprac.sees.model.status.MomentStatus;
+import com.fastprac.sees.model.tool.Button;
+import com.fastprac.utils.lib.StdDraw;
 
 /**
  * @author Admin
@@ -52,20 +55,34 @@ public class Attacking implements Callable<List<MomentStatus>> {
 
 		List<MomentStatus> mStatusList = new ArrayList<MomentStatus>();
 		try {
-
+			Toolbar toolbar = RunEES.getToolbar();
+			Button startBtn = toolbar.getStartBtn();
+			Button stopBtn = toolbar.getStopBtn();
+			Button resetBtn = toolbar.getResetBtn();
 			while (duration > 0) {
+				if (StdDraw.mousePressed()) {
+					int x = (int) StdDraw.mouseX();
+					int y = (int) StdDraw.mouseY();
+					if (stopBtn.pointOn(x, y) && stopBtn.isReleased()) {
+						toolbar.pressStop();
+					} else if (startBtn.pointOn(x, y) && startBtn.isReleased()) {
+						toolbar.pressStart();
+					}
+				}	
 				
-				attacker.killNeighbors();
-				
-				MomentStatus mStatus = attacker.move();
-				mStatusList.add(mStatus);
-				Thread.sleep(pauseTime);
-				duration--;
+				if (startBtn.isPressed()) {
+					attacker.killNeighbors();
+
+					MomentStatus mStatus = attacker.move();
+					mStatusList.add(mStatus);
+					Thread.sleep(pauseTime);
+					duration--;
+				}
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return mStatusList;		
+		return mStatusList;
 	}
 
 }

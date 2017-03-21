@@ -31,11 +31,13 @@ import com.fastprac.sees.model.Timer;
 import com.fastprac.sees.model.status.MomentStatus;
 import com.fastprac.sees.model.tool.Button;
 import com.fastprac.sees.model.tool.ButtonStatus;
+import com.fastprac.sees.model.tool.ButtonType;
 import com.fastprac.sees.model.tool.Panel;
 import com.fastprac.sees.model.tool.ToolItem;
 import com.fastprac.sees.task.Attacking;
 import com.fastprac.sees.task.Escape;
 import com.fastprac.sees.task.Timing;
+import com.fastprac.sees.task.Toolbar;
 import com.fastprac.utils.lib.StdDraw;
 
 /**
@@ -49,6 +51,7 @@ public class RunEES {
 	private static final int poolSize = 100;
 	private static final int duration = 60;
 	private static final int numOfPeople = 100;
+	private static Toolbar toolbar;
 
 	static {
 		System.out.println("Creating canvas...");
@@ -64,16 +67,25 @@ public class RunEES {
 		Panel toolPanel = new Panel(new Location(0, (canvasHeight - 70)), new Dimension(canvasWidth, 50));
 		
 		// Add start button
-		toolPanel.addButton(600, (canvasHeight - 60), 49, 28, "Start");
+		toolPanel.addButton(600, (canvasHeight - 60), 49, 28, ButtonType.START);
 		
 		// Add pause button
-		toolPanel.addButton(650, (canvasHeight - 60), 49, 28, "Pause");
+		toolPanel.addButton(650, (canvasHeight - 60), 49, 28, ButtonType.STOP);
 				
 		// Add stop button
-		toolPanel.addButton(700, (canvasHeight - 60), 49, 28, "Stop");
+		toolPanel.addButton(700, (canvasHeight - 60), 49, 28, ButtonType.RESET);
 		
 		toolPanel.draw();
 		return toolPanel;
+	}
+	
+	private static Toolbar createToolbar(Panel toolPanel) {
+		Button startBtn = (Button)toolPanel.getButton(ButtonType.START.getLabel());
+		Button stopBtn = (Button)toolPanel.getButton(ButtonType.STOP.getLabel());
+		Button resetBtn = (Button)toolPanel.getButton(ButtonType.RESET.getLabel());
+		
+		toolbar = new Toolbar(startBtn, stopBtn, resetBtn);
+		return toolbar;
 	}
 	
 	private static Timer createResultPanel() {
@@ -127,17 +139,17 @@ public class RunEES {
 		Attacking attacking = new Attacking(attacker, 1, duration);
 
 		// Run simulation
-		Button startBtn = (Button) toolPanel.getButton("Start");
+		Button startBtn = toolbar.getStartBtn();
 		while(startBtn.getStatus() == ButtonStatus.ON) {
 			if (StdDraw.mousePressed()) {
 			int x = (int) StdDraw.mouseX();
 			int y = (int) StdDraw.mouseY();
 			if (startBtn.pointOn(x, y)) {
-				startBtn.disable();				
+				toolbar.pressStart();				
 				startSimulation(timer, personEscapes, attacking);
-				startBtn.enable();
+				toolbar.pressStop();
 			}}
-		}		
+		}
 	}
 	
 	private static void startSimulation(Timer timer, Map<Person, Escape> personEscapes, Attacking attacking) {
@@ -179,6 +191,10 @@ public class RunEES {
 		}
 	}
 	
+	public static Toolbar getToolbar() {
+		return toolbar;
+	}
+
 	/**
 	 * Run EES
 	 * 
@@ -186,6 +202,7 @@ public class RunEES {
 	 */
 	public static void main(String[] args) {
 		Panel toolPanel = createToolPanel();
+		Toolbar toolbar = createToolbar(toolPanel);
 
 		Timer timer = createResultPanel();
 

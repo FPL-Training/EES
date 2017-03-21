@@ -91,4 +91,12 @@ public class Button extends ToolItem {
 		status = ButtonStatus.OFF;
 		draw();			
 	}
+
+	public boolean isReleased() {
+		return (status == ButtonStatus.ON);
+	}
+	
+	public boolean isPressed() {
+		return (status == ButtonStatus.OFF);
+	}
 }
