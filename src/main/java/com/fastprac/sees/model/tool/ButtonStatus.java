@@ -18,7 +18,7 @@ import java.awt.Color;
  *
  */
 public enum ButtonStatus implements ToolItemStatus {
-	ON(Color.BLUE, Color.CYAN),
+	ON(Color.BLACK, Color.BLACK),
 	OFF(Color.LIGHT_GRAY, Color.LIGHT_GRAY);
 	
 	private Color textColor;

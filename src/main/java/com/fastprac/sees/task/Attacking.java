@@ -57,7 +57,7 @@ public class Attacking implements Callable<List<MomentStatus>> {
 
 		List<MomentStatus> mStatusList = new ArrayList<MomentStatus>();
 		try {
-			Toolbar toolbar = RunEES.getToolbar();
+			Toolbar toolbar = Controller.getInstance().getToolbar();
 			while (duration > 0) {
 				if (StdDraw.mousePressed()) {
 					int x = (int) StdDraw.mouseX();

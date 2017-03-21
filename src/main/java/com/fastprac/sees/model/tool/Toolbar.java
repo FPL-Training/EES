@@ -62,4 +62,10 @@ public class Toolbar {
 			pressStop();
 		}
 	}
+
+	public void draw() {
+		startBtn.draw();
+		stopBtn.draw();
+		resetBtn.draw();
+	}
 }

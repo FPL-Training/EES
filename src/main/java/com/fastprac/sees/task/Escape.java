@@ -62,7 +62,7 @@ public class Escape implements Callable<List<MomentStatus>> {
 		List<MomentStatus> mStatusList = new ArrayList<MomentStatus>();
 		Long seq = 0L;
 
-		Toolbar toolbar = RunEES.getToolbar();
+		Toolbar toolbar = Controller.getInstance().getToolbar();
 		while (person.isMovable() && (duration > 0)) {
 			if (StdDraw.mousePressed()) {
 				int x = (int) StdDraw.mouseX();
