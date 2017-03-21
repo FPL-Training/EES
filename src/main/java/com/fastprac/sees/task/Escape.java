@@ -19,6 +19,7 @@ import com.fastprac.sees.driver.RunEES;
 import com.fastprac.sees.model.Person;
 import com.fastprac.sees.model.status.MomentStatus;
 import com.fastprac.sees.model.tool.Button;
+import com.fastprac.sees.model.tool.Toolbar;
 import com.fastprac.utils.lib.StdDraw;
 
 /**

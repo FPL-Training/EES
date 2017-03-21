@@ -1,4 +1,4 @@
-package com.fastprac.sees.task;
+package com.fastprac.sees.model.tool;
 
 import com.fastprac.sees.model.tool.Button;
 import com.fastprac.sees.model.tool.ButtonStatus;
@@ -42,4 +42,15 @@ public class Toolbar {
 		return resetBtn;
 	}
 
+	public void enable() {
+		startBtn.enable();
+		stopBtn.disable();
+		resetBtn.enable();
+	}
+
+	public void disable() {
+		startBtn.disable();
+		stopBtn.disable();
+		resetBtn.disable();
+	}	
 }

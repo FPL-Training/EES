@@ -33,11 +33,10 @@ import com.fastprac.sees.model.tool.Button;
 import com.fastprac.sees.model.tool.ButtonStatus;
 import com.fastprac.sees.model.tool.ButtonType;
 import com.fastprac.sees.model.tool.Panel;
-import com.fastprac.sees.model.tool.ToolItem;
 import com.fastprac.sees.task.Attacking;
 import com.fastprac.sees.task.Escape;
 import com.fastprac.sees.task.Timing;
-import com.fastprac.sees.task.Toolbar;
+import com.fastprac.sees.model.tool.Toolbar;
 import com.fastprac.utils.lib.StdDraw;
 
 /**
@@ -85,6 +84,8 @@ public class RunEES {
 		Button resetBtn = (Button)toolPanel.getButton(ButtonType.RESET.getLabel());
 		
 		toolbar = new Toolbar(startBtn, stopBtn, resetBtn);
+		toolbar.disable();
+		
 		return toolbar;
 	}
 	
@@ -135,6 +136,8 @@ public class RunEES {
 	}
 	
 	private static void runAttackingSimulation(Panel toolPanel, Timer timer, Attacker attacker, Map<Person, Escape> personEscapes) {
+		toolbar.enable();
+		
 		// Define attacking action
 		Attacking attacking = new Attacking(attacker, 1, duration);
 
@@ -202,7 +205,7 @@ public class RunEES {
 	 */
 	public static void main(String[] args) {
 		Panel toolPanel = createToolPanel();
-		Toolbar toolbar = createToolbar(toolPanel);
+		toolbar = createToolbar(toolPanel);
 
 		Timer timer = createResultPanel();
 
