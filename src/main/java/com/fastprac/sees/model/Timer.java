@@ -25,6 +25,17 @@ public class Timer {
 	private long startTime;
 	private long elapsedTime;
 	public static final String pattern = "HH:mm:ss";
+	/*
+	 * *********************************************************************************
+	 * Copyright (c) Fast & Practical Learning LLC (F&PL), 2017
+	 *
+	 * This unpublished material is proprietary to Fast & Practical Learning, LLC (F&PL).
+	 * All rights reserved. The methods and techniques described herein are considered 
+	 * trade secrets and/or confidential. Reproduction or distribution, in whole or in 
+	 * part, is forbidden except by express written permission of Fast & Practical 
+	 * Learning, LLC (F&PL).
+	 ***********************************************************************************
+	 */
 	public static final SimpleDateFormat format = new SimpleDateFormat(pattern);
 
 	/**
