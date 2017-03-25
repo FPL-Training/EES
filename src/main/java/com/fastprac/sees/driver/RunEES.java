@@ -164,9 +164,9 @@ public class RunEES {
 			executor.shutdown();
 
 			// Wait until all threads are finish
-			System.out.println("Running for life...");
+			System.out.println("The attack starts and run for your life...");
 			while (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
-				// System.out.println("Still running...");
+				System.out.println("Count..." + duration);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -197,9 +197,9 @@ public class RunEES {
 
 		Attacker attacker = addAttacker();
 
-		Map<Person, Escape> personEscapes = addPeople();
+		Map<Person, Escape> people = addPeople();
 
-		runAttackingSimulation(timer, attacker, personEscapes);
+		runAttackingSimulation(timer, attacker, people);
 	}
 
 }

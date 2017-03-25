@@ -11,6 +11,7 @@ public class Controller {
 
 	private Panel toolPanel;
 	private Toolbar toolbar;
+	private Panel resultPanel;
 	private static Controller controller;
 
 	private Controller() {
