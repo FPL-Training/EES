@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import com.fastprac.sees.driver.RunEES;
+import com.fastprac.sees.model.Location;
 import com.fastprac.sees.model.Person;
+import com.fastprac.sees.model.Result;
 import com.fastprac.sees.model.status.MomentStatus;
 import com.fastprac.sees.model.tool.Button;
 import com.fastprac.sees.model.tool.ButtonType;
@@ -62,8 +64,11 @@ public class Escape implements Callable<List<MomentStatus>> {
 		List<MomentStatus> mStatusList = new ArrayList<MomentStatus>();
 		Long seq = 0L;
 
-		Toolbar toolbar = Controller.getInstance().getToolbar();
-		while (person.isMovable() && (duration > 0)) {
+		Controller ctrl = Controller.getInstance();
+		Toolbar toolbar = ctrl.getToolbar();
+		int count = 0;
+		
+		while (person.isMovable() && (count < duration)) {
 			if (StdDraw.mousePressed()) {
 				int x = (int) StdDraw.mouseX();
 				int y = (int) StdDraw.mouseY();
@@ -74,11 +79,14 @@ public class Escape implements Callable<List<MomentStatus>> {
 				seq++;
 				MomentStatus mStatus = person.move();
 				mStatusList.add(mStatus);
+
+				// Record the move
+				count++;
+				Result result = new Result(1, count, person.getId(), person.getCell(), person.getStatus());
+				ctrl.addResult(1, result);
+				
+				//
 				Thread.sleep(pauseTime);
-				// System.out.println("Person: "+person.getId() + ", status:
-				// "+person.getStatus().toString()+", Duration left =
-				// "+duration);
-				duration--;
 			}
 		}
 

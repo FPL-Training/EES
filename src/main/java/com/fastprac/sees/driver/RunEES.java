@@ -27,6 +27,7 @@ import com.fastprac.sees.model.Campus;
 import com.fastprac.sees.model.Dimension;
 import com.fastprac.sees.model.Location;
 import com.fastprac.sees.model.Person;
+import com.fastprac.sees.model.Result;
 import com.fastprac.sees.model.Timer;
 import com.fastprac.sees.model.status.MomentStatus;
 import com.fastprac.sees.model.tool.Button;
@@ -49,10 +50,12 @@ public class RunEES {
 	private static final int duration = 60;
 	private static final int numOfPeople = 100;
 	private static Toolbar toolbar;
+	private static Controller ctrl;
 
 	static {
 		System.out.println("Creating canvas...");
 		cavas = new Canvas(canvasWidth, canvasHeight);
+		ctrl = Controller.getInstance();
 	}
 
 	public RunEES() {
@@ -60,12 +63,11 @@ public class RunEES {
 	}
 
 	private static void createToolPanel() {
-		Controller controller = Controller.getInstance();
-		controller.addToolPanel(0, (canvasHeight - 60), canvasWidth, 40);
-		controller.addToolbar();
-		controller.draw();
+		ctrl.addToolPanel(0, (canvasHeight - 60), canvasWidth, 40);
+		ctrl.addToolbar();
+		ctrl.draw();
 	}
-	
+
 	private static Timer createResultPanel() {
 		System.out.println("Creating result panel...");
 		Timer timer = new Timer(new Location(700, canvasHeight - 100), new Dimension(60, 32));
@@ -86,7 +88,9 @@ public class RunEES {
 		System.out.println("Adding an attacker in campus...");
 		int attackStartI = (int) (Campus.getClassroomStartI() + Math.random() * Campus.getClassroomNumX());
 		int attackStartJ = (int) (Campus.getClassroomStartJ() + Campus.getClassroomNumY() / 2);
-		Attacker attacker = new Attacker(1, "Attacker", 10, Campus.cells[attackStartI][attackStartJ]);
+
+		int attackerId = numOfPeople + 1;
+		Attacker attacker = new Attacker(attackerId, "Attacker", 10, Campus.cells[attackStartI][attackStartJ]);
 		Campus.attacker = attacker;
 		attacker.draw();
 		System.out.println("An attacker created at (" + attackStartI + ", " + attackStartJ + ")");
@@ -112,9 +116,8 @@ public class RunEES {
 		return personEscapes;
 	}
 
-	private static void runAttackingSimulation(Timer timer, Attacker attacker,
-			Map<Person, Escape> personEscapes) {
-		
+	private static void runAttackingSimulation(Timer timer, Attacker attacker, Map<Person, Escape> personEscapes) {
+
 		Toolbar toolbar = Controller.getInstance().getToolbar();
 		toolbar.enable();
 
@@ -131,7 +134,7 @@ public class RunEES {
 
 				if (startBtn.isPressed()) {
 					startSimulation(timer, personEscapes, attacking);
-					
+
 					toolbar.disable();
 					toolbar.getResetBtn().enable();
 				}
@@ -182,6 +185,22 @@ public class RunEES {
 		return toolbar;
 	}
 
+	public static void writeOutResults() {
+		Map<Long, Result> escapingResults = ctrl.getResults().getEscapingResults();
+		Map<Long, Result> timingResults = ctrl.getResults().getEscapingResults();
+		
+		for (Entry<Long, Result> entry : timingResults.entrySet()) {
+			long time = entry.getKey();
+			Result result = entry.getValue();
+			System.out.println("Time:"+time+"\t"+ "Loc: ("+result.getCell().getLoc().getX()+","+result.getCell().getLoc().getY()+"), status: "+result.getStatus());;
+		}
+		
+	}
+	
+	public Controller getController() {
+		return Controller.getInstance();
+	}
+	
 	/**
 	 * Run EES
 	 * 
@@ -200,6 +219,8 @@ public class RunEES {
 		Map<Person, Escape> people = addPeople();
 
 		runAttackingSimulation(timer, attacker, people);
+		
+		writeOutResults();
 	}
 
 }

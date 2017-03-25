@@ -2,6 +2,8 @@ package com.fastprac.sees.task;
 
 import com.fastprac.sees.model.Dimension;
 import com.fastprac.sees.model.Location;
+import com.fastprac.sees.model.Result;
+import com.fastprac.sees.model.Results;
 import com.fastprac.sees.model.tool.Button;
 import com.fastprac.sees.model.tool.ButtonType;
 import com.fastprac.sees.model.tool.Panel;
@@ -13,9 +15,10 @@ public class Controller {
 	private Toolbar toolbar;
 	private Panel resultPanel;
 	private static Controller controller;
+	private static Results results;
 
 	private Controller() {
-
+		results = new Results();
 	}
 
 	public static Controller getInstance() {
@@ -47,6 +50,21 @@ public class Controller {
 
 	public Toolbar getToolbar() {
 		return toolbar;
+	}
+
+	public void addResult(int simulId, Result result) {
+		results.addResult(1, result);
+	}
+	
+	public Results getResults() {
+		return results;
+	}
+
+	/**
+	 * @param results the results to set
+	 */
+	public void setResults(Results results) {
+		this.results = results;
 	}
 
 	private Button createStartButton(int panelX, int panelY, int panelWidth, int panelHeight) {

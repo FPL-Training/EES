@@ -17,6 +17,7 @@ import java.util.concurrent.Callable;
 
 import com.fastprac.sees.driver.RunEES;
 import com.fastprac.sees.model.Attacker;
+import com.fastprac.sees.model.Result;
 import com.fastprac.sees.model.status.MomentStatus;
 import com.fastprac.sees.model.tool.Button;
 import com.fastprac.sees.model.tool.ButtonType;
@@ -57,8 +58,10 @@ public class Attacking implements Callable<List<MomentStatus>> {
 
 		List<MomentStatus> mStatusList = new ArrayList<MomentStatus>();
 		try {
-			Toolbar toolbar = Controller.getInstance().getToolbar();
-			while (duration > 0) {
+			Controller ctrl = Controller.getInstance();
+			Toolbar toolbar = ctrl.getToolbar();
+			int count = 0;
+			while (count < duration) {
 				if (StdDraw.mousePressed()) {
 					int x = (int) StdDraw.mouseX();
 					int y = (int) StdDraw.mouseY();
@@ -70,8 +73,14 @@ public class Attacking implements Callable<List<MomentStatus>> {
 
 					MomentStatus mStatus = attacker.move();
 					mStatusList.add(mStatus);
+					
+					// Record the move
+					count++;
+					Result result = new Result(1, count, attacker.getId(), attacker.getCell(), attacker.getStatus());
+					ctrl.addResult(1, result);
+					
+					//
 					Thread.sleep(pauseTime);
-					duration--;
 				}
 			}
 		} catch (InterruptedException e) {
