@@ -14,6 +14,7 @@ package com.fastprac.sees.task;
 import com.fastprac.sees.model.Dimension;
 import com.fastprac.sees.model.Location;
 import com.fastprac.sees.model.Result;
+import com.fastprac.sees.model.ResultPanel;
 import com.fastprac.sees.model.Results;
 import com.fastprac.sees.model.tool.Button;
 import com.fastprac.sees.model.tool.ButtonType;
@@ -23,8 +24,8 @@ import com.fastprac.sees.model.tool.Toolbar;
 public class Controller {
 
 	private Panel toolPanel;
+	private ResultPanel resultPanel;
 	private Toolbar toolbar;
-	private Panel resultPanel;
 	private static Controller controller;
 	private static Results results;
 
@@ -38,7 +39,7 @@ public class Controller {
 		}
 		return controller;
 	}
-	
+
 	public void addToolPanel(int x, int y, int width, int height) {
 		toolPanel = new Panel(new Location(x, y), new Dimension(width, height));
 	}
@@ -58,6 +59,17 @@ public class Controller {
 			toolbar.disable();
 		}
 	}
+	
+	public ResultPanel getResultPanel() {
+		if (resultPanel == null) {
+			resultPanel = new ResultPanel();
+		}
+		return resultPanel;
+	}
+
+	public void setResultPanel(ResultPanel resultPanel) {
+		this.resultPanel = resultPanel;
+	}
 
 	public Toolbar getToolbar() {
 		return toolbar;
@@ -66,13 +78,14 @@ public class Controller {
 	public void addResult(int simulId, Result result) {
 		results.addResult(1, result);
 	}
-	
+
 	public Results getResults() {
 		return results;
 	}
 
 	/**
-	 * @param results the results to set
+	 * @param results
+	 *            the results to set
 	 */
 	public void setResults(Results results) {
 		this.results = results;
@@ -104,9 +117,19 @@ public class Controller {
 		Button button = new Button(ButtonType.RESET, new Location(btnX, btnY), new Dimension(btnW, btnH));
 		return button;
 	}
-	
+
 	public void draw() {
-		toolPanel.draw();
-		toolbar.draw();
+		if (toolPanel != null) {
+			toolPanel.draw();
+		}
+		
+		if (toolbar != null) {
+			toolbar.draw();
+		}
+
+		if (resultPanel != null) {
+			resultPanel.draw();
+		}
+
 	}
 }

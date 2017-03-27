@@ -12,6 +12,7 @@
 package com.fastprac.sees.driver;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +29,12 @@ import com.fastprac.sees.model.Dimension;
 import com.fastprac.sees.model.Location;
 import com.fastprac.sees.model.Person;
 import com.fastprac.sees.model.Result;
-import com.fastprac.sees.model.Timer;
 import com.fastprac.sees.model.status.MomentStatus;
 import com.fastprac.sees.model.tool.Button;
+import com.fastprac.sees.model.tool.DisplayText;
 import com.fastprac.sees.task.Attacking;
 import com.fastprac.sees.task.Controller;
 import com.fastprac.sees.task.Escape;
-import com.fastprac.sees.task.Timing;
 import com.fastprac.sees.model.tool.Toolbar;
 import com.fastprac.utils.lib.StdDraw;
 
@@ -65,16 +65,24 @@ public class RunEES {
 	private static void createToolPanel() {
 		ctrl.addToolPanel(0, (canvasHeight - 60), canvasWidth, 40);
 		ctrl.addToolbar();
-		ctrl.draw();
 	}
 
-	private static Timer createResultPanel() {
+	private static void createResultPanel() {
 		System.out.println("Creating result panel...");
-		Timer timer = new Timer(new Location(700, canvasHeight - 100), new Dimension(60, 32));
-		Timing timing = new Timing(timer, 100L);
-		timer.draw();
+		
+		// Time
+		Location timeLoc = new Location(700, canvasHeight - 100);
+		Dimension timeDimension = new Dimension(100, 32);
+		DisplayText time = new DisplayText(timeLoc, timeDimension, "Time", "");
+		ctrl.getResultPanel().addDisplayText("Time", time);
+		
+		// Total people
+		
+		// Dead
+		
+		// Uninjured
+		
 
-		return timer;
 	}
 
 	private static Campus createCampus() {
@@ -116,7 +124,7 @@ public class RunEES {
 		return personEscapes;
 	}
 
-	private static void runAttackingSimulation(Timer timer, Attacker attacker, Map<Person, Escape> personEscapes) {
+	private static void runAttackingSimulation(Attacker attacker, Map<Person, Escape> personEscapes) {
 
 		Toolbar toolbar = Controller.getInstance().getToolbar();
 		toolbar.enable();
@@ -133,7 +141,7 @@ public class RunEES {
 				toolbar.toggle(x, y);
 
 				if (startBtn.isPressed()) {
-					startSimulation(timer, personEscapes, attacking);
+					startSimulation(personEscapes, attacking);
 
 					toolbar.disable();
 					toolbar.getResetBtn().enable();
@@ -142,7 +150,7 @@ public class RunEES {
 		}
 	}
 
-	private static void startSimulation(Timer timer, Map<Person, Escape> personEscapes, Attacking attacking) {
+	private static void startSimulation(Map<Person, Escape> personEscapes, Attacking attacking) {
 		// Start simulation.
 		try {
 			// Keep all threads in list
@@ -150,7 +158,7 @@ public class RunEES {
 			ExecutorService executor = Executors.newFixedThreadPool(poolSize);
 
 			// Start clock
-			timer.reset();
+			ctrl.getResultPanel().reset();
 			// executor.execute(timing);
 
 			// Start attack
@@ -168,8 +176,18 @@ public class RunEES {
 
 			// Wait until all threads are finish
 			System.out.println("The attack starts and run for your life...");
-			while (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
-				System.out.println("Count..." + duration);
+
+			Date startTime = new Date();
+			long startTimeVal = startTime.getTime();
+			long timeElapsed = 0L;
+			while (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
+				Date currentTime = new Date();
+				if (ctrl.getToolbar().getStartBtn().isPressed()) {
+					timeElapsed = currentTime.getTime() - startTimeVal;
+					ctrl.getResultPanel().updateTime("Time", timeElapsed);
+				} else {
+					startTimeVal = currentTime.getTime() - timeElapsed;
+				}
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -179,10 +197,6 @@ public class RunEES {
 			System.out.println("    FINISH!     ");
 			System.out.println("****************");
 		}
-	}
-
-	public static Toolbar getToolbar() {
-		return toolbar;
 	}
 
 	public static void writeOutResults() {
@@ -210,16 +224,22 @@ public class RunEES {
 		// Create tool panel and toolbar
 		createToolPanel();
 
-		Timer timer = createResultPanel();
+		createResultPanel();
 
+		ctrl.draw();
+		ctrl.getResultPanel().updateTime("Time", 0);
+
+		// Crate campus
 		Campus campus = createCampus();
 
 		Attacker attacker = addAttacker();
 
 		Map<Person, Escape> people = addPeople();
-
-		runAttackingSimulation(timer, attacker, people);
 		
+		// Run simulation
+		runAttackingSimulation(attacker, people);
+		
+		// Write out results
 		writeOutResults();
 	}
 
