@@ -29,7 +29,7 @@ import com.fastprac.utils.lib.StdDraw;
  * @author Admin
  *
  */
-public class Escape implements Callable<List<MomentStatus>> {
+public class Escape extends TaskBase implements Callable<List<MomentStatus>> {
 
 	private Person person;
 	private int speed; // (1-1000);
@@ -39,6 +39,7 @@ public class Escape implements Callable<List<MomentStatus>> {
 	 * 
 	 */
 	public Escape() {
+		super();
 		this.person = new Person();
 		speed = 10;
 		duration = 100;
@@ -50,8 +51,8 @@ public class Escape implements Callable<List<MomentStatus>> {
 	 * @param speed
 	 * @param duration
 	 */
-	public Escape(Person person, int speed, int duration) {
-		super();
+	public Escape(Controller ctrl, Person person, int speed, int duration) {
+		super(ctrl);
 		this.person = person;
 		this.speed = speed;
 		this.duration = duration;
@@ -64,7 +65,6 @@ public class Escape implements Callable<List<MomentStatus>> {
 		List<MomentStatus> mStatusList = new ArrayList<MomentStatus>();
 		Long seq = 0L;
 
-		Controller ctrl = Controller.getInstance();
 		Toolbar toolbar = ctrl.getToolbar();
 		int count = 0;
 		

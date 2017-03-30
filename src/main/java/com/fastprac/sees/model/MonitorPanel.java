@@ -17,61 +17,72 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import com.fastprac.sees.model.tool.DisplayText;
+import com.fastprac.sees.model.tool.Panel;
 
-public class ResultPanel {
-	private Map<String, DisplayText> results;
+public class MonitorPanel extends Panel {
+	private Map<String, DisplayText> items;
 
-	public ResultPanel() {
+	public MonitorPanel() {
 		super();
-		results = new HashMap<String, DisplayText>();
+		initialize();
 	}
 
-	public void addDisplayText(String label, DisplayText text) {
-		results.put(label, text);
+	public MonitorPanel(Location loc, Dimension dimension) {
+		super(loc, dimension);
+		initialize();
 	}
 
-	public Map<String, DisplayText> getResults() {
-		return results;
+	private void initialize() {
+		items = new HashMap<String, DisplayText>();
+	}
+
+	public void addItem(String label, DisplayText text) {
+		items.put(label, text);
+	}
+
+	public Map<String, DisplayText> getItems() {
+		return items;
 	}
 
 	public void draw() {
-		for (Entry<String, DisplayText> text : results.entrySet()) {
+		for (Entry<String, DisplayText> text : items.entrySet()) {
 			DisplayText displayText = text.getValue();
 			displayText.draw();
 		}
 	}
 
 	public void drawText() {
-		for (Entry<String, DisplayText> text : results.entrySet()) {
+		for (Entry<String, DisplayText> text : items.entrySet()) {
 			DisplayText displayText = text.getValue();
 			displayText.drawText();
 		}
 	}
 
 	public void clearText() {
-		for (Entry<String, DisplayText> text : results.entrySet()) {
+		for (Entry<String, DisplayText> text : items.entrySet()) {
 			DisplayText displayText = text.getValue();
 			displayText.clearText();
 		}
 	}
-	
+
 	public void reset() {
-		for (Entry<String, DisplayText> text : results.entrySet()) {
+		for (Entry<String, DisplayText> text : items.entrySet()) {
 			DisplayText displayText = text.getValue();
 			displayText.clearText();
 		}
 	}
 
 	public void updateTime(String label, long timeElapsed) {
-		DisplayText displayTime = results.get(label);
-		displayTime.clearText();
+		DisplayText displayTime = items.get(label);
+		if (displayTime != null) {
+			displayTime.clearText();
 
-		long seconds =  TimeUnit.MILLISECONDS.toSeconds(timeElapsed);
-		long minutes = TimeUnit.MILLISECONDS.toMinutes(timeElapsed);
-		long hours = TimeUnit.MILLISECONDS.toHours(timeElapsed);
-		String time = hours + ":"+minutes + ":"+seconds;
-		displayTime.setText(time);
-		displayTime.drawText();
-		System.out.println("Time: " + time+"......");		
+			long seconds = TimeUnit.MILLISECONDS.toSeconds(timeElapsed);
+			long minutes = TimeUnit.MILLISECONDS.toMinutes(timeElapsed);
+			long hours = TimeUnit.MILLISECONDS.toHours(timeElapsed);
+			String time = hours + ":" + minutes + ":" + seconds;
+			displayTime.setText(time);
+			displayTime.drawText();
+		}
 	}
 }

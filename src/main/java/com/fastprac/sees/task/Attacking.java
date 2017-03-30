@@ -28,7 +28,7 @@ import com.fastprac.utils.lib.StdDraw;
  * @author Admin
  *
  */
-public class Attacking implements Callable<List<MomentStatus>> {
+public class Attacking extends TaskBase implements Callable<List<MomentStatus>> {
 	private Attacker attacker;
 	private long duration;
 	private int speed;
@@ -37,6 +37,7 @@ public class Attacking implements Callable<List<MomentStatus>> {
 	 * 
 	 */
 	public Attacking() {
+		super();
 		this.duration = 0;
 		this.attacker = new Attacker();
 	}
@@ -45,8 +46,8 @@ public class Attacking implements Callable<List<MomentStatus>> {
 	 * @param attacker
 	 * @param duration
 	 */
-	public Attacking(Attacker attacker, int speed, long duration) {
-		super();
+	public Attacking(Controller ctrl, Attacker attacker, int speed, long duration) {
+		super(ctrl);
 		this.attacker = attacker;
 		this.speed = speed;
 		this.duration = duration;
@@ -58,7 +59,6 @@ public class Attacking implements Callable<List<MomentStatus>> {
 
 		List<MomentStatus> mStatusList = new ArrayList<MomentStatus>();
 		try {
-			Controller ctrl = Controller.getInstance();
 			Toolbar toolbar = ctrl.getToolbar();
 			int count = 0;
 			while (count < duration) {

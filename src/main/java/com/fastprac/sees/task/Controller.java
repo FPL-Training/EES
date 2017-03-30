@@ -11,125 +11,120 @@
  */
 package com.fastprac.sees.task;
 
-import com.fastprac.sees.model.Dimension;
-import com.fastprac.sees.model.Location;
+import java.util.Date;
+
+import com.fastprac.sees.model.Canvas;
 import com.fastprac.sees.model.Result;
-import com.fastprac.sees.model.ResultPanel;
+import com.fastprac.sees.model.MonitorPanel;
 import com.fastprac.sees.model.Results;
 import com.fastprac.sees.model.tool.Button;
-import com.fastprac.sees.model.tool.ButtonType;
-import com.fastprac.sees.model.tool.Panel;
 import com.fastprac.sees.model.tool.Toolbar;
+import com.fastprac.utils.lib.StdDraw;
 
 public class Controller {
 
-	private Panel toolPanel;
-	private ResultPanel resultPanel;
-	private Toolbar toolbar;
-	private static Controller controller;
-	private static Results results;
+	private Canvas canvas;
 
-	private Controller() {
+	private long startTime;
+	private long timeElapsed;
+
+	private Results results;
+
+	public Controller() {
+		startTime = 0;
+		timeElapsed = 0;
+
 		results = new Results();
 	}
 
-	public static Controller getInstance() {
-		if (controller == null) {
-			controller = new Controller();
-		}
-		return controller;
-	}
-
-	public void addToolPanel(int x, int y, int width, int height) {
-		toolPanel = new Panel(new Location(x, y), new Dimension(width, height));
-	}
-
-	public void addToolbar() {
-		if (toolPanel != null) {
-			int panelWidth = toolPanel.getDimension().getWidth();
-			int panelHeight = toolPanel.getDimension().getHeight();
-			int panelX = toolPanel.getLoc().getX();
-			int panelY = toolPanel.getLoc().getY();
-
-			Button startBtn = createStartButton(panelX, panelY, panelWidth, panelHeight);
-			Button stopBtn = createStopButton(panelX, panelY, panelWidth, panelHeight);
-			Button resetBtn = createResetButton(panelX, panelY, panelWidth, panelHeight);
-
-			toolbar = new Toolbar(startBtn, stopBtn, resetBtn);
-			toolbar.disable();
-		}
-	}
-	
-	public ResultPanel getResultPanel() {
-		if (resultPanel == null) {
-			resultPanel = new ResultPanel();
-		}
-		return resultPanel;
-	}
-
-	public void setResultPanel(ResultPanel resultPanel) {
-		this.resultPanel = resultPanel;
-	}
-
 	public Toolbar getToolbar() {
-		return toolbar;
+		return canvas.getToolPanel().getToolbar();
+	}
+
+	public MonitorPanel getResultPanel() {
+		return canvas.getResultPanel();
 	}
 
 	public void addResult(int simulId, Result result) {
-		results.addResult(1, result);
+		this.results.addResult(1, result);
 	}
 
 	public Results getResults() {
-		return results;
+		return this.results;
 	}
 
-	/**
-	 * @param results
-	 *            the results to set
-	 */
 	public void setResults(Results results) {
 		this.results = results;
 	}
 
-	private Button createStartButton(int panelX, int panelY, int panelWidth, int panelHeight) {
-		int btnW = panelWidth / 20;
-		int btnH = panelHeight * 3 / 5;
-		int btnX = panelX + panelWidth * 4 / 5;
-		int btnY = panelY + panelHeight / 5;
-		Button button = new Button(ButtonType.START, new Location(btnX, btnY), new Dimension(btnW, btnH));
-		return button;
-	}
-
-	private Button createStopButton(int panelX, int panelY, int panelWidth, int panelHeight) {
-		int btnW = panelWidth / 20;
-		int btnH = panelHeight * 3 / 5;
-		int btnX = panelX + panelWidth * 4 / 5 + (btnW + 2);
-		int btnY = panelY + panelHeight / 5;
-		Button button = new Button(ButtonType.STOP, new Location(btnX, btnY), new Dimension(btnW, btnH));
-		return button;
-	}
-
-	private Button createResetButton(int panelX, int panelY, int panelWidth, int panelHeight) {
-		int btnW = panelWidth / 20;
-		int btnH = panelHeight * 3 / 5;
-		int btnX = panelX + panelWidth * 4 / 5 + (btnW + 2) * 2;
-		int btnY = panelY + panelHeight / 5;
-		Button button = new Button(ButtonType.RESET, new Location(btnX, btnY), new Dimension(btnW, btnH));
-		return button;
-	}
-
-	public void draw() {
-		if (toolPanel != null) {
-			toolPanel.draw();
-		}
-		
-		if (toolbar != null) {
-			toolbar.draw();
+	public Button getActiveButton() {
+		Button activeBtn = null;
+		Toolbar toolbar = getToolbar();
+		if (StdDraw.mousePressed()) {
+			int x = (int) StdDraw.mouseX();
+			int y = (int) StdDraw.mouseY();
+			toolbar.toggle(x, y);
 		}
 
-		if (resultPanel != null) {
-			resultPanel.draw();
+		if (toolbar.getStartBtn().isPressed()) {
+			activeBtn = toolbar.getStartBtn();
+		} else if (toolbar.getStopBtn().isPressed()) {
+			activeBtn = toolbar.getStopBtn();
+		} else if (toolbar.getResetBtn().isPressed()) {
+			activeBtn = toolbar.getResetBtn();
 		}
+		return activeBtn;
+	}
+
+	public void startSimulation() {
+		startTime = (new Date()).getTime();
+		timeElapsed = 0L;
+	}
+
+	public void updateMonitor() {
+		updateTimeElapsed();
+		updateAttacked();
+		updateUnattacked();
+	}
+
+	public void updateTimeElapsed() {
+		long currentTime = (new Date()).getTime();
+		if (getToolbar().getStartBtn().isPressed()) {
+			timeElapsed = currentTime - startTime;
+			canvas.getResultPanel().updateTime("Time", timeElapsed);
+		} else {
+			startTime = currentTime - timeElapsed;
+		}
+	}
+
+	public void updateAttacked() {
 
 	}
+
+	public void updateUnattacked() {
+
+	}
+
+	public void addCanvas(int width, int height) {
+		addCanvas(width, height, false);
+	}
+
+	public void addCanvas(int width, int height, Boolean reset) {
+		if (canvas == null || reset) {
+			canvas = new Canvas(width, height);
+		}
+	}
+
+	public Canvas getCanvas() {
+		return canvas;
+	}
+
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public long getTimeElapsed() {
+		return timeElapsed;
+	}
+
 }

@@ -7,26 +7,33 @@ public class Toolbar {
 	private Button startBtn;
 	private Button stopBtn;
 	private Button resetBtn;
+	private Button activeBtn;
 
 	public Toolbar(Button startBtn, Button stopBtn, Button resetBtn) {
 		this.startBtn = startBtn;
 		this.stopBtn = stopBtn;
 		this.resetBtn = resetBtn;
+		this.activeBtn = null;
 	}
 
-	public void pressStart() {
+	private void pressStart() {
 		startBtn.disable();
 		stopBtn.enable();
+		resetBtn.disable();
+		this.activeBtn = this.startBtn;
 	}
 
-	public void pressStop() {
+	private void pressStop() {
 		startBtn.enable();
 		stopBtn.disable();
+		resetBtn.enable();
+		this.activeBtn = this.stopBtn;
 	}
 
-	public void reset() {
+	private void pressReset() {
 		startBtn.enable();
 		stopBtn.disable();
+		resetBtn.disable();
 	}
 
 	public Button getStartBtn() {
@@ -44,7 +51,7 @@ public class Toolbar {
 	public void enable() {
 		startBtn.enable();
 		stopBtn.disable();
-		resetBtn.enable();
+		resetBtn.disable();
 	}
 
 	public void disable() {
@@ -59,7 +66,7 @@ public class Toolbar {
 		} else if (stopBtn.pointOn(x, y) && stopBtn.isReleased()) {
 			pressStop();
 		} else if (resetBtn.pointOn(x, y) && resetBtn.isReleased()) {
-			pressStop();
+			pressReset();
 		}
 	}
 
