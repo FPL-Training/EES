@@ -59,17 +59,22 @@ public class Canvas {
 		resultPanel = new MonitorPanel();
 		
 		// Time
-		Location timeLoc = new Location(700, (canvasHeight - 100));
-		Dimension timeDimension = new Dimension(100, 32);
-		DisplayText time = new DisplayText(timeLoc, timeDimension, "Time", "");
+		Location loc = new Location(700, (canvasHeight - 100));
+		Dimension dimension = new Dimension(100, 32);
+		DisplayText time = new DisplayText(loc, dimension, "Time", "");
 		resultPanel.addItem("Time", time);
 
-		// Total people
+		// Attacked people
+		loc = new Location(700, (canvasHeight - 120));
+		dimension = new Dimension(100, 32);
+		DisplayText attacked = new DisplayText(loc, dimension, "Attacked", "");
+		resultPanel.addItem("Attacked", attacked);
 
-		// Dead
-
-		// Uninjured
-
+		// Unttacked people
+		loc = new Location(700, (canvasHeight - 140));
+		dimension = new Dimension(100, 32);
+		DisplayText unattacked = new DisplayText(loc, dimension, "Unattacked", "");
+		resultPanel.addItem("Unattacked", unattacked);
 	}
 	
 	public void addCampus(int startX, int startY, int cellSize) {

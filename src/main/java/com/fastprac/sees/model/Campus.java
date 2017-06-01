@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.fastprac.sees.task.Attackers;
 import com.fastprac.sees.task.DrawCell;
 import com.fastprac.utils.lib.StdDraw;
 
@@ -34,7 +35,7 @@ public class Campus {
 	public static final Cell[][] cells = new Cell[numInX][numInY];
 	public static List<Cell> doors;
 	public static List<Tree> trees;
-	public static Attacker attacker;
+	public static Attackers attackers;
 
 	// Classroom
 	private static int classroomStartI;

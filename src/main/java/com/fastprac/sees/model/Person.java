@@ -14,11 +14,15 @@ package com.fastprac.sees.model;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import com.fastprac.sees.model.status.CellStatus;
 import com.fastprac.sees.model.status.MomentStatus;
 import com.fastprac.sees.model.status.PersonStatus;
+import com.fastprac.sees.task.Attackers;
+import com.fastprac.sees.task.Attacking;
 import com.fastprac.utils.lib.StdDraw;
 
 /**
@@ -162,6 +166,25 @@ public class Person {
 				this.cell.setStatus(CellStatus.OCCUPIED);
 			}
 		}
+	}
+
+	private Cell chooseCellToRunAway(Attackers attackers) {
+		Cell cellTo = null;
+
+		List<Cell> candidateCells = new ArrayList<Cell>();
+		Map<Attacker, Attacking> attackerMap = attackers.getAttackers();
+		for (Entry<Attacker, Attacking> obj : attackerMap.entrySet()) {
+			Attacker attacker = obj.getKey();
+			cellTo = chooseCellToRunAway(attacker.getCell());
+			candidateCells.add(cellTo);
+		}
+
+		if (!candidateCells.isEmpty()) {
+			int select = (int) Math.random() * candidateCells.size();
+			cellTo = candidateCells.get(select);
+		}
+
+		return cellTo;
 	}
 
 	private Cell chooseCellToRunAway(Cell badCell) {
@@ -358,7 +381,7 @@ public class Person {
 		Cell cellTo = null;
 
 		if (this.type != PersonType.ATTACKER) {
-			cellTo = chooseCellToRunAway(Campus.attacker.getCell());
+			cellTo = chooseCellToRunAway(Campus.attackers);
 		}
 
 		if (cellTo == null) {

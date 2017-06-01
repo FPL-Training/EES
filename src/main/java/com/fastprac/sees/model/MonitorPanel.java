@@ -85,4 +85,12 @@ public class MonitorPanel extends Panel {
 			displayTime.drawText();
 		}
 	}
+	
+	public void updateDisplayText(String label, long num) {
+		DisplayText display = items.get(label);
+		if (display != null) {
+			display.setText(Long.toString(num));
+			display.drawText();
+		}
+	}
 }

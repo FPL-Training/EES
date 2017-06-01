@@ -59,16 +59,10 @@ public class Attacking extends TaskBase implements Callable<List<MomentStatus>> 
 
 		List<MomentStatus> mStatusList = new ArrayList<MomentStatus>();
 		try {
-			Toolbar toolbar = ctrl.getToolbar();
 			int count = 0;
 			while (count < duration) {
-				if (StdDraw.mousePressed()) {
-					int x = (int) StdDraw.mouseX();
-					int y = (int) StdDraw.mouseY();
-					toolbar.toggle(x, y);
-				}	
-				
-				if (toolbar.getStartBtn().isPressed()) {
+				ctrl.checkMouseEvent();
+				if (ctrl.isStartActive()) {
 					attacker.killNeighbors();
 
 					MomentStatus mStatus = attacker.move();

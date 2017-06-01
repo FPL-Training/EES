@@ -86,7 +86,10 @@ public class DisplayText {
 	 * @param text the text to set
 	 */
 	public void setText(String text) {
-		this.text = text;
+		if (text!= null && !text.equalsIgnoreCase(this.text)) {
+			clearText();
+			this.text = text;
+		}
 	}
 
 	/**
@@ -107,12 +110,12 @@ public class DisplayText {
 	}
 	
 	public void drawLabel() {
-		StdDraw.setPenColor(Color.BLACK);
+		StdDraw.setPenColor(Color.GRAY);
 		StdDraw.text(loc.getX(), loc.getY(), label + ": ");
 	}
 	
 	public void drawText() {
-		StdDraw.setPenColor(Color.BLACK);
+		StdDraw.setPenColor(Color.GRAY);
 		StdDraw.text(textX, loc.getY(), text);
 	}
 	
@@ -125,5 +128,4 @@ public class DisplayText {
 		StdDraw.setPenColor(Color.WHITE);
 		StdDraw.text(textX, loc.getY(), text);
 	}
-
 }
